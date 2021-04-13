@@ -406,6 +406,7 @@ GarnetNetwork::regStats()
         .name(name() + ".avg_vc_load")
         .flags(Stats::pdf | Stats::total | Stats::nozero | Stats::oneline)
         ;
+
 }
 
 void
@@ -438,6 +439,17 @@ GarnetNetwork::collateStats()
     for (int i = 0; i < m_routers.size(); i++) {
         m_routers[i]->collateStats();
     }
+
+	//Loupe
+	loupeFile << "End of sim"<<std::endl;;
+	loupeFile << "Router_id, activity_count"<<std::endl;
+	for(int i=0; i<m_routers.size(); i++){
+		Router * cur_router=m_routers[i];
+		double activity=cur_router->get_crossbar_activity();
+		int rid=cur_router->get_id();
+		loupeFile <<rid<<","<<activity<<std::endl;;
+	}
+
 }
 
 void

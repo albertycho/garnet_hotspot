@@ -240,6 +240,15 @@ Router::collateStats()
     m_crossbar_activity = m_switch->get_crossbar_activity();
 }
 
+
+// to pass onto Loupe
+double 
+Router::get_crossbar_activity() 
+{
+	return m_switch->get_crossbar_activity(); 
+}
+
+
 void
 Router::resetStats()
 {

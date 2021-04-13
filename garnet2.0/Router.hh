@@ -79,7 +79,10 @@ class Router : public BasicRouter, public Consumer
     int get_num_inports()   { return m_input_unit.size(); }
     int get_num_outports()  { return m_output_unit.size(); }
     int get_id()            { return m_id; }
-    bool has_free_vc(int outport, int vnet);
+	
+	//Loupe
+	double get_crossbar_activity();
+	bool has_free_vc(int outport, int vnet);
 
     void init_net_ptr(GarnetNetwork* net_ptr)
     {
