@@ -114,7 +114,7 @@ def main():
 
     # create the GUI window and trackbars
     cv.namedWindow('Heatmap', cv.WINDOW_NORMAL)
-    cv.resizeWindow('Heatmap',800,800) # default size is 800x800px, but it is resizable
+    cv.resizeWindow('Heatmap',1000,1000) # default size is 800x800px, but it is resizable
     cv.createTrackbar('Window Size','Heatmap',window_size-1,int(sim_cycles//10-1),trackbar_nothing)
     cv.createTrackbar('Window Index','Heatmap',0,int((sim_cycles//10-1)//10),trackbar_nothing)
     cv.createTrackbar('Most Active Routers','Heatmap',0,topology_info[1]**2,trackbar_nothing)
