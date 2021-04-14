@@ -441,13 +441,13 @@ GarnetNetwork::collateStats()
     }
 
 	//Loupe
-	loupeFile << "End of sim"<<std::endl;;
-	loupeFile << "Router_id, activity_count"<<std::endl;
+	loupeFile << "End of sim," <<std::endl;;
+	loupeFile << "Router_id,activity_count," <<std::endl;
 	for(int i=0; i<m_routers.size(); i++){
-		Router * cur_router=m_routers[i];
-		double activity=cur_router->get_crossbar_activity();
-		int rid=cur_router->get_id();
-		loupeFile <<rid<<","<<activity<<std::endl;;
+		Router * cur_router = m_routers[i];
+		double activity = cur_router->get_crossbar_activity();
+		int rid = cur_router->get_id();
+		loupeFile << rid << "," << activity << "," << std::endl;;
 	}
 
 }
@@ -456,11 +456,10 @@ void
 GarnetNetwork::print(ostream& out) const
 {
     // out << "[GarnetNetwork]";
-    out << "GarnetNetwork, ";
-    out << "Cores=" << m_num_rows * m_num_cols << ", ";
-    out << "Rows=" << m_num_rows << ", ";
-    out << "VCs=" << m_vcs_per_vnet << ", ";
-    out << "Vnets=" << m_virtual_networks;
+    out << m_num_rows * m_num_cols << ",";
+    out << m_num_rows << ",";
+    out << m_vcs_per_vnet << ",";
+    out << m_virtual_networks;
     out << ",\n";
 }
 
