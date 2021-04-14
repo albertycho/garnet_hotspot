@@ -60,20 +60,21 @@ def draw_mesh(heat_map, topology_info, n=0):
             img - ~1000x1000 image with the drawn mesh topology, to be displayed in the openCV GUI
     """
 
-    window_size = 1000
+    img_size = 1000 # set img size as 1000x1000
     num_rows = topology_info[1]
-    router_width = window_size//2//num_rows
+    router_width = img_size//2//num_rows # pixel width for a drawn router
 
-    img = np.full((window_size+router_width,window_size+router_width,3), 255, np.uint8)
+    img = np.full((img_size+router_width,img_size+router_width,3), 255, np.uint8)
     intensities = np.array(heat_map*255, dtype=np.uint8)
 
+    # apply JET colormap to heat map to assign colors to routers
     colors = np.array(cv.applyColorMap(intensities, cv.COLORMAP_JET).reshape(num_rows,num_rows,3), dtype=float)
 
     most_active = np.argsort(-intensities, kind='stable')[0:n]
 
     for i in range(num_rows):
         for j in range(num_rows):
-            # draw routers as black squares
+            # draw routers w/ interpolated color
             top_left_x = router_width + router_width*i*2
             top_left_y = router_width + router_width*j*2
             cv.rectangle(img, (top_left_x, top_left_y), (top_left_x+router_width, top_left_y+router_width), tuple(colors[j][i][:]), 2)
@@ -82,6 +83,7 @@ def draw_mesh(heat_map, topology_info, n=0):
                 cv.line(img, (top_left_x, top_left_y+router_width), (top_left_x+router_width, top_left_y), tuple(colors[j][i][:]), 2)
 
             # draw links as black lines
+            # TODO add option to interpolate color for links as well
             if j==0 or j%(num_rows - 1) != 0:
                 cv.line(img, (top_left_x+router_width//2, top_left_y+router_width), (top_left_x+router_width//2, top_left_y+router_width*2), (0,0,0), 2)
             if i==0 or i%(num_rows - 1) != 0:
@@ -111,11 +113,13 @@ def main():
     heat_map_condense = condense_heat_map(heat_map, window_size)
 
     # create the GUI window and trackbars
-    cv.namedWindow('Heatmap')
+    cv.namedWindow('Heatmap', cv.WINDOW_NORMAL)
+    cv.resizeWindow('Heatmap',800,800) # default size is 800x800px, but it is resizable
     cv.createTrackbar('Window Size','Heatmap',window_size-1,int(sim_cycles//10-1),trackbar_nothing)
     cv.createTrackbar('Window Index','Heatmap',0,int((sim_cycles//10-1)//10),trackbar_nothing)
     cv.createTrackbar('Most Active Routers','Heatmap',0,topology_info[1]**2,trackbar_nothing)
 
+    # set tracked variables to their initial values for the first pass through below loop
     window_index = cv.getTrackbarPos('Window Index', 'Heatmap')
     old_window_size = cv.getTrackbarPos('Window Size', 'Heatmap') + 1
     most_active = cv.getTrackbarPos('Most Active Routers', 'Heatmap')
