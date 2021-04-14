@@ -49,7 +49,7 @@ def condense_heat_map(heat_map, time_window):
         condense_heat_map[i,:] = np.sum(heat_map[i*time_window:i*time_window+time_window,:], axis=0)/time_window
     return condense_heat_map / 5
 
-def draw_mesh(heat_map, topology_info, n=None):
+def draw_mesh(heat_map, topology_info, n=0):
     """ Creates an image of a mesh network, with routers color coded.
 
         Inputs:
@@ -69,9 +69,7 @@ def draw_mesh(heat_map, topology_info, n=None):
 
     colors = np.array(cv.applyColorMap(intensities, cv.COLORMAP_JET).reshape(num_rows,num_rows,3), dtype=float)
 
-    if n != None:
-        # most_active = np.argsort(np.flip(-intensities.reshape(num_rows, num_rows), axis=0).flatten(), kind='stable')[0:n]
-        most_active = np.argsort(-intensities, kind='stable')[0:n]
+    most_active = np.argsort(-intensities, kind='stable')[0:n]
 
     for i in range(num_rows):
         for j in range(num_rows):
