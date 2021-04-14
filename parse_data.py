@@ -10,17 +10,17 @@ import numpy as np
 
 # data type for the cycle data
 dtype = [
-    ("Cycle", "i4"),
-    ("Unit", "<U255"),
-    ("Unit_ID", "i4"),
-    ("Direction", "<U255"),
-    ("Flit_ID", "i4"),
-    ("Flit_type", "i4"),
-    ("Flit_vnet", "i4"),
-    ("Flit_vc", "i4"),
-    ("Flit_src", "i4"),
-    ("Flit_dst", "i4"),
-    ("Flit_enqueue", "i4"),
+    ("cycle", "i4"),
+    ("unit", "<U255"),
+    ("unit_ID", "i4"),
+    ("direction", "<U255"),
+    ("flit_ID", "i4"),
+    ("flit_type", "i4"),
+    ("flit_vnet", "i4"),
+    ("flit_vc", "i4"),
+    ("flit_src", "i4"),
+    ("flit_dst", "i4"),
+    ("flit_enqueue", "i4"),
 ]
 
 def parseData(filename, topology):
@@ -69,10 +69,3 @@ def parseData(filename, topology):
     total_router_activity = np.array([int(router[1]) for router in end_sim])
     
     return cycle_data, total_router_activity, topology_info
-
-# testing code
-
-filename = r'traceFiles\XY_Mesh_8x8_UniformRandom_02.csv'
-topology = "mesh"
-
-cycle_data, activity, topology_info = parseData(filename, topology)
