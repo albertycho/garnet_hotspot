@@ -1,0 +1,78 @@
+"""
+Parses the .csv file produced by running a Garnet simulation.
+
+Alan Kittel
+4/13/2021
+Version 1.0: Initial implementation
+"""
+
+import numpy as np
+
+# data type for the cycle data
+dtype = [
+    ("Cycle", "i4"),
+    ("Unit", "<U255"),
+    ("Unit_ID", "i4"),
+    ("Direction", "<U255"),
+    ("Flit_ID", "i4"),
+    ("Flit_type", "i4"),
+    ("Flit_vnet", "i4"),
+    ("Flit_vc", "i4"),
+    ("Flit_src", "i4"),
+    ("Flit_dst", "i4"),
+    ("Flit_enqueue", "i4"),
+]
+
+def parseData(filename, topology):
+    """
+    Parses the .csv file produced by running a Garnet simulation.
+    For now, only meshes are supported.
+
+    Inputs:
+        filename - the relative path to the .csv file
+        topology - string identifying the topology type, for only "mesh" is supported
+    Outputs:
+        cycle_data - cycle-by-cycle data for flit presence in buffers and on links
+        total_router_activity - list of total flits passing through each router for whole simulation
+        topology_info - extracted topology information, varies by topology type
+                        For mesh, this is [num_routers, num_rows, vcs_per_vnet, m_virtual_networks]
+    """
+
+    # for now, only mesh is supported, will add support for other types later
+    assert(topology == "mesh")
+
+    # open trace file and read lines
+    traceFile = open(filename)
+    lines = traceFile.readlines()
+    lines = [line.split(',')[0:-1] for line in lines]
+
+    # get topology information
+    num_routers = int(lines[0][0])
+    num_rows = int(lines[0][1])
+    vcs_per_vnet = int(lines[0][2])
+    m_virtual_networks = int(lines[0][3])
+    topology_info = np.array([num_routers, num_rows, vcs_per_vnet, m_virtual_networks])
+
+    # line number of the end of sim printing
+    end_sim_idx = np.argwhere([line[0] == "End of sim" for line in lines])[0][0]
+
+    # parse the cycle data into a strucutred numpy array
+    cycle_data = lines[1:end_sim_idx]
+    for i in range(len(cycle_data)):
+        cycle_data[i] = (int(cycle_data[i][0]), cycle_data[i][1], int(cycle_data[i][2]), cycle_data[i][3], \
+            int(cycle_data[i][5]), int(cycle_data[i][6]), int(cycle_data[i][7]), int(cycle_data[i][8]), \
+            int(cycle_data[i][9]), int(cycle_data[i][10]), int(cycle_data[i][11]))
+    cycle_data = np.array(cycle_data, dtype=dtype)
+
+    # parse the total router activity
+    end_sim = lines[end_sim_idx+2:]
+    total_router_activity = np.array([int(router[1]) for router in end_sim])
+    
+    return cycle_data, total_router_activity, topology_info
+
+# testing code
+
+filename = r'traceFiles\XY_Mesh_8x8_UniformRandom_02.csv'
+topology = "mesh"
+
+cycle_data, activity, topology_info = parseData(filename, topology)
