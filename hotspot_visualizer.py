@@ -49,7 +49,7 @@ def condense_heat_map(heat_map, time_window):
         condense_heat_map[i,:] = np.sum(heat_map[i*time_window:i*time_window+time_window,:], axis=0)/time_window
     return condense_heat_map / 5
 
-def draw_mesh(heat_map, topology_info):
+def draw_mesh(heat_map, topology_info, n=None):
     """ Creates an image of a mesh network, with routers color coded.
 
         Inputs:
@@ -69,12 +69,19 @@ def draw_mesh(heat_map, topology_info):
 
     colors = np.array(cv.applyColorMap(intensities, cv.COLORMAP_JET).reshape(num_rows,num_rows,3), dtype=float)
 
+    if n != None:
+        # most_active = np.argsort(np.flip(-intensities.reshape(num_rows, num_rows), axis=0).flatten(), kind='stable')[0:n]
+        most_active = np.argsort(-intensities, kind='stable')[0:n]
+
     for i in range(num_rows):
         for j in range(num_rows):
             # draw routers as black squares
             top_left_x = router_width + router_width*i*2
             top_left_y = router_width + router_width*j*2
             cv.rectangle(img, (top_left_x, top_left_y), (top_left_x+router_width, top_left_y+router_width), tuple(colors[j][i][:]), 2)
+            if np.any(j*num_rows + i == most_active):
+                cv.line(img, (top_left_x, top_left_y), (top_left_x+router_width, top_left_y+router_width), tuple(colors[j][i][:]), 2)
+                cv.line(img, (top_left_x, top_left_y+router_width), (top_left_x+router_width, top_left_y), tuple(colors[j][i][:]), 2)
 
             # draw links as black lines
             if j==0 or j%(num_rows - 1) != 0:
@@ -109,13 +116,15 @@ def main():
     cv.namedWindow('Heatmap')
     cv.createTrackbar('Window Size','Heatmap',window_size-1,int(sim_cycles//10-1),trackbar_nothing)
     cv.createTrackbar('Window Index','Heatmap',0,int((sim_cycles//10-1)//10),trackbar_nothing)
+    cv.createTrackbar('Most Active Routers','Heatmap',0,topology_info[1]**2,trackbar_nothing)
 
     window_index = cv.getTrackbarPos('Window Index', 'Heatmap')
     old_window_size = cv.getTrackbarPos('Window Size', 'Heatmap') + 1
+    most_active = cv.getTrackbarPos('Most Active Routers', 'Heatmap')
 
     while(1):
         # draw the mesh
-        cv.imshow('Heatmap', draw_mesh(heat_map_condense[window_index,:], topology_info))
+        cv.imshow('Heatmap', draw_mesh(heat_map_condense[window_index,:], topology_info, most_active))
 
         k = cv.waitKey(1) & 0xFF # wait for 1ms
         if k == 27: # hit escape to end the program
@@ -124,6 +133,7 @@ def main():
         # get current positions of trackbars
         window_index = cv.getTrackbarPos('Window Index', 'Heatmap')
         window_size = cv.getTrackbarPos('Window Size', 'Heatmap') + 1
+        most_active = cv.getTrackbarPos('Most Active Routers', 'Heatmap')
 
         # no way I could find to change the bound of a trackbar once you create it.
         # manually set the position to the maximum possible window_indedx given
