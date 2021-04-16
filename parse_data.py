@@ -38,20 +38,13 @@ def parseData(filename, topology):
                         For mesh, this is [num_routers, num_rows, vcs_per_vnet, m_virtual_networks]
     """
 
-    # for now, only mesh is supported, will add support for other types later
-    assert(topology == "mesh")
-
     # open trace file and read lines
     traceFile = open(filename)
     lines = traceFile.readlines()
     lines = [line.split(',')[0:-1] for line in lines]
 
     # get topology information
-    num_routers = int(lines[0][0])
-    num_rows = int(lines[0][1])
-    vcs_per_vnet = int(lines[0][2])
-    m_virtual_networks = int(lines[0][3])
-    topology_info = np.array([num_routers, num_rows, vcs_per_vnet, m_virtual_networks])
+    topology_info = np.array([int(lines[0][i]) for i in range(len(lines[0]))])
 
     # line number of the end of sim printing
     end_sim_idx = np.argwhere([line[0] == "End of sim" for line in lines])[0][0]
