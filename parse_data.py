@@ -7,6 +7,9 @@ Version 1.0: Initial implementation
 """
 
 import numpy as np
+import pickle
+
+from hotspot_functions import create_heat_maps
 
 # data type for the cycle data
 dtype = [
@@ -62,3 +65,24 @@ def parseData(filename, topology):
     total_router_activity = np.array([int(router[1]) for router in end_sim])
     
     return cycle_data, total_router_activity, topology_info
+
+def load_and_save(loadfile, savefile, topology):
+    save_data = {}
+
+    cycle_data, router_activity, topology_info = parseData(loadfile, topology)
+
+    heat_map_routers, heat_map_ports = create_heat_maps(cycle_data, topology_info)
+
+    save_data["heat_map_routers"] = heat_map_routers
+    save_data["heat_map_ports"] = heat_map_ports
+    save_data["topology_info"] = topology_info
+    save_data["router_activity"] = router_activity
+
+    with open(savefile, 'wb') as f:
+        pickle.dump(save_data, f)
+
+def load(loadfile):
+    with open(loadfile, 'rb') as f:
+        data = pickle.load(f)
+    
+    return data["heat_map_routers"], data["heat_map_ports"], data["topology_info"], data["router_activity"]
