@@ -1,3 +1,30 @@
+"""
+Hotspot visualizer for mesh topology.
+
+Supports an arbitrary NxN mesh with any traffic pattern.
+
+Use parse_data to first parse a trace file produced by garnet and dump data into a .pkl file.
+The filename at the beginning of main can be changed to visualize a different sim.
+
+Hotspots are visualized by a color interpolation of router activity to colormap JET seen here
+https://docs.opencv.org/3.4.12/d3/d50/group__imgproc__colormap.html
+Color coding is absolute - for instance the darkest red indicates incoming flits at every port every cycles.
+
+The displayed GUI window has trackbars for several configurable options:
+Window size -> Changes the number of cycles to average router activity over when interpolating a color.
+               Higher window sizes give a better representation of general router activity, while 
+               smaller windows capture more of router activity changing throughout a sim, but
+               are more susceptible to noise.
+Window offset -> cycle offset of the chosen window size, this is like sliding the window over the sim
+                 and is mathematically equivalent to a convolution.
+Most active router -> draws an X through the top N most active routers
+Toggle router/Port view -> changes view between color coding entire routers, or individual ports
+
+Alan Kittel
+ECE 6115
+4/16/2021
+"""
+
 import cv2 as cv
 import numpy as np
 from parse_data import parseData, load
