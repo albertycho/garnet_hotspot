@@ -12,7 +12,7 @@ Color coding is absolute - for instance the darkest red indicates incoming flits
 
 The displayed GUI window has trackbars for several configurable options:
 Window size -> Changes the number of cycles to average router activity over when interpolating a color.
-               Higher window sizes give a better representation of general router activity, while 
+               Higher window sizes give a better representation of general router activity, while
                smaller windows capture more of router activity changing throughout a sim, but
                are more susceptible to noise.
 Window offset -> cycle offset of the chosen window size, this is like sliding the window over the sim

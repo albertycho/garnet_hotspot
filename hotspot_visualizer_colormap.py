@@ -14,7 +14,7 @@ Each displayed column represents a single router, and is in ascending order from
 according to the router labeling used in Garnet.
 
 This is a consolidation of the mesh visualizer code into a single picture. From top to bottom,
-each column shows the color interpolated router activity for the chosen window size across all 
+each column shows the color interpolated router activity for the chosen window size across all
 windows. For N simulation cycles and window size M, there are N-M+1 individual color strips
 concatenated together in a column. This can be thought of as a 1D convolution for each column.
 

@@ -53,6 +53,16 @@ def heat_map_window(heat_map, time_window, window_offset):
     return np.sum(heat_map[window_offset:window_offset+time_window,:], axis=0) / time_window
 
 def heat_map_window_all(heat_map, time_window):
+    """
+    Computes the average flit activity from a heat map over a sliding window.
+
+    Inputs:
+        heat_map - heat map for routers, ports, or links
+        time_window - number of cycles to average over
+    Outputs:
+        average flit activity for each router, port, or link over the sliding window
+    """
+
     mask = np.ones((time_window, heat_map.shape[1]))
 
     heat_map_all = fftconvolve(heat_map, mask, axes=0, mode='valid') / time_window
@@ -60,6 +70,17 @@ def heat_map_window_all(heat_map, time_window):
     return heat_map_all
 
 def create_colormap(heat_map, window_size=100):
+    """
+    Computes the colormap as an interpolation of router activity to the colormap JET from the
+    heat map generated from heat_map_window_all.
+
+    Inputs:
+        heat_map - heat map for routers, ports, or links
+        window_size - number of cycles to average over
+    Outputs:
+        image with interpolated color representing router activity
+    """
+
     num_routers = heat_map.shape[1]
     scale=50
 
