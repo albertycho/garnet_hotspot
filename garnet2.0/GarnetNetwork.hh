@@ -37,6 +37,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <sstream>
 
 #include "mem/ruby/network/Network.hh"
 #include "mem/ruby/network/fault_model/FaultModel.hh"
@@ -69,6 +70,11 @@ class GarnetNetwork : public Network
     std::ofstream loupeFile;
     std::ofstream * loupeFileptr;
     std::ofstream * getLoupeFileptr() { return loupeFileptr; }
+
+	//read hotspot related cmdline input args
+	int hotspot_detect_on;
+	int hotspot_period;
+	int hotspot_cutoff;
 
     // for network
     uint32_t getNiFlitSize() const { return m_ni_flit_size; }

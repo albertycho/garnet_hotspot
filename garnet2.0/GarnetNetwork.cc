@@ -97,6 +97,32 @@ GarnetNetwork::GarnetNetwork(const Params *p)
         ni->init_net_ptr(this);
     }
 
+	hotspot_detect_on=0;
+	hotspot_period=-1;
+	hotspot_cutoff=-1;
+	int cmdline_sim_cycles=-1;
+	std::ifstream hotspot_cfg_file("hotspot_config.txt");
+
+	if(hotspot_cfg_file.is_open()){
+		std::cout<<"opened hotspot_config.txt"<<std::endl;
+		hotspot_cfg_file >> hotspot_detect_on;
+		hotspot_cfg_file >> hotspot_cutoff;
+		hotspot_cfg_file >> hotspot_period;
+		hotspot_cfg_file >> cmdline_sim_cycles;
+		
+	}
+	else std::cout<<"could not open hotspot_config.txt"<<std::endl;
+	hotspot_cfg_file.close();
+
+	if(hotspot_cutoff==-1){
+		hotspot_cutoff = m_routers.size();
+	}
+	if(hotspot_period==-1){
+		hotspot_period=cmdline_sim_cycles;
+
+	}
+
+
     loupeFile.open("LoupeTraceFile.csv", std::ofstream::out);
     loupeFileptr = &loupeFile;
 }
@@ -441,13 +467,13 @@ GarnetNetwork::collateStats()
     }
 
 	//Loupe
-	loupeFile << "End of sim"<<std::endl;;
-	loupeFile << "Router_id, activity_count"<<std::endl;
+	loupeFile << "End of sim," <<std::endl;;
+	loupeFile << "Router_id,activity_count," <<std::endl;
 	for(int i=0; i<m_routers.size(); i++){
-		Router * cur_router=m_routers[i];
-		double activity=cur_router->get_crossbar_activity();
-		int rid=cur_router->get_id();
-		loupeFile <<rid<<","<<activity<<std::endl;;
+		Router * cur_router = m_routers[i];
+		double activity = cur_router->get_crossbar_activity();
+		int rid = cur_router->get_id();
+		loupeFile << rid << "," << activity << "," << std::endl;;
 	}
 
 }
@@ -456,11 +482,10 @@ void
 GarnetNetwork::print(ostream& out) const
 {
     // out << "[GarnetNetwork]";
-    out << "GarnetNetwork, ";
-    out << "Cores=" << m_num_rows * m_num_cols << ", ";
-    out << "Rows=" << m_num_rows << ", ";
-    out << "VCs=" << m_vcs_per_vnet << ", ";
-    out << "Vnets=" << m_virtual_networks;
+    out << m_num_rows * m_num_cols << ",";
+    out << m_num_rows << ",";
+    out << m_vcs_per_vnet << ",";
+    out << m_virtual_networks;
     out << ",\n";
 }
 

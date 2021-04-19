@@ -1,0 +1,1 @@
+configs/example/garnet_synth_traffic.py
