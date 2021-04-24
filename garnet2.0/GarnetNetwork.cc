@@ -100,6 +100,7 @@ GarnetNetwork::GarnetNetwork(const Params *p)
 	hotspot_detect_on=0;
 	hotspot_period=-1;
 	hotspot_cutoff=-1;
+	std::string cmdline_topology;
 	int cmdline_sim_cycles=-1;
 	std::ifstream hotspot_cfg_file("hotspot_config.txt");
 
@@ -108,6 +109,7 @@ GarnetNetwork::GarnetNetwork(const Params *p)
 		hotspot_cfg_file >> hotspot_detect_on;
 		hotspot_cfg_file >> hotspot_cutoff;
 		hotspot_cfg_file >> hotspot_period;
+		hotspot_cfg_file >> cmdline_topology;
 		hotspot_cfg_file >> cmdline_sim_cycles;
 		
 	}
@@ -127,6 +129,8 @@ GarnetNetwork::GarnetNetwork(const Params *p)
     loupeFile.open("LoupeTraceFile.csv", std::ofstream::out);
     loupeFileptr = &loupeFile;
 	hotspotStatFile.open("hotspotStatFile.txt", std::ofstream::out);
+
+	loupeFile << cmdline_topology<<","<<cmdline_sim_cycles<<",";
 
 }
 
@@ -182,6 +186,8 @@ GarnetNetwork::~GarnetNetwork()
     deletePointers(m_nis);
     deletePointers(m_networklinks);
     deletePointers(m_creditlinks);
+	loupeFile.close();
+	hotspotStatFile.close();
 }
 
 /*
@@ -532,7 +538,6 @@ void
 GarnetNetwork::process_hotspot_data()
 {
 
-	//loupeFile << rid << "," << activity << "," << std::endl;;
 	hotspotStatFile<<"at cycle "<<curCycle()<<std::endl;
 
 	std::cout<<"process_hotspot_called"<<std::endl;

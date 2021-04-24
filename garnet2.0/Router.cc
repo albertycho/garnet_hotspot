@@ -87,7 +87,7 @@ Router::wakeup()
 {
 	GarnetNetwork* GNP=get_net_ptr();
 	if(GNP->hotspot_period_trigger()){
-		process_hotspot_data();
+		GNP->process_hotspot_data();
 	}
 
     DPRINTF(RubyNetwork, "Router %d woke up\n", m_id);
