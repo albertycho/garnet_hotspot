@@ -80,10 +80,9 @@ NetworkLink::wakeup()
             *loupeFileptr << curCycle() << ",";
             *loupeFileptr << "Link,";
             *loupeFileptr << m_id << ",";
-            *loupeFileptr << ",";
+            *loupeFileptr << "-1,";
             *loupeFileptr << *t_flit;
-            *loupeFileptr << ",";
-            *loupeFileptr << ",\n";
+            *loupeFileptr << ",-1,\n";
         }
     }
 }
