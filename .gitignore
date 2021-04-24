@@ -2,3 +2,4 @@ gem5/build
 gem5/build/*
 garnet2.0/.vscode/*
 __pycache__/*
+*swp

@@ -121,6 +121,12 @@ class Router : public BasicRouter, public Consumer
 
     uint32_t functionalWrite(Packet *);
 
+	//hotspot variable functions
+	void clear_hotspot_flit_count() {hotspot_flit_count=0;}
+	void increment_hotspot_flit_count() {hotspot_flit_count++;}
+	int get_hotspot_flit_count() {return hotspot_flit_count;}
+
+
   private:
     Cycles m_latency;
     int m_virtual_networks, m_num_vcs, m_vc_per_vnet;
@@ -140,6 +146,9 @@ class Router : public BasicRouter, public Consumer
     Stats::Scalar m_sw_output_arbiter_activity;
 
     Stats::Scalar m_crossbar_activity;
+
+	//hotspot variable
+	int hotspot_flit_count;
 };
 
 #endif // __MEM_RUBY_NETWORK_GARNET2_0_ROUTER_HH__

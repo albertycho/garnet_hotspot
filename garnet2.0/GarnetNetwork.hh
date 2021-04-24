@@ -71,10 +71,7 @@ class GarnetNetwork : public Network
     std::ofstream * loupeFileptr;
     std::ofstream * getLoupeFileptr() { return loupeFileptr; }
 
-	//read hotspot related cmdline input args
-	int hotspot_detect_on;
-	int hotspot_period;
-	int hotspot_cutoff;
+	std::ofstream hotspotStatFile;
 
     // for network
     uint32_t getNiFlitSize() const { return m_ni_flit_size; }
@@ -155,6 +152,11 @@ class GarnetNetwork : public Network
         m_total_hops += hops;
     }
 
+
+	//hotspot functions
+	bool hotspot_period_trigger();
+	void process_hotspot_data();
+
   protected:
     // Configuration
     int m_num_rows;
@@ -207,6 +209,16 @@ class GarnetNetwork : public Network
     std::vector<NetworkLink *> m_networklinks; // All flit links in the network
     std::vector<CreditLink *> m_creditlinks; // All credit links in the network
     std::vector<NetworkInterface *> m_nis;   // All NI's in Network
+
+	//  hotspot varibales
+	//  crom cmdline
+	int hotspot_detect_on;
+	int hotspot_period;
+	int hotspot_cutoff;
+	
+	// internal
+	int next_hotspot_processing_cycle;
+
 };
 
 inline std::ostream&

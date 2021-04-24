@@ -95,6 +95,7 @@ CrossbarSwitch::wakeup()
             m_output_unit[outport]->insert_flit(t_flit);
             m_switch_buffer[inport]->getTopFlit();
             m_crossbar_activity++;
+			m_router->increment_hotspot_flit_count();
         }
     }
 }

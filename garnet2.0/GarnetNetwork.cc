@@ -119,12 +119,15 @@ GarnetNetwork::GarnetNetwork(const Params *p)
 	}
 	if(hotspot_period==-1){
 		hotspot_period=cmdline_sim_cycles;
-
 	}
+
+	next_hotspot_processing_cycle=hotspot_period;
 
 
     loupeFile.open("LoupeTraceFile.csv", std::ofstream::out);
     loupeFileptr = &loupeFile;
+	hotspotStatFile.open("hotspotStatFile.txt", std::ofstream::out);
+
 }
 
 void
@@ -513,4 +516,30 @@ GarnetNetwork::functionalWrite(Packet *pkt)
     }
 
     return num_functional_writes;
+}
+
+bool
+GarnetNetwork::hotspot_period_trigger()
+{
+	if(curCycle()>=next_hotspot_processing_cycle)
+	{
+		return true;
+	}
+	return false;
+}
+
+void
+GarnetNetwork::process_hotspot_data()
+{
+
+	//loupeFile << rid << "," << activity << "," << std::endl;;
+	hotspotStatFile<<"at cycle "<<curCycle()<<std::endl;
+
+	std::cout<<"process_hotspot_called"<<std::endl;
+
+	for(Router * tmp_router : m_routers){
+		hotspotStatFile<<"router_id:"<<tmp_router->get_id()<<", pkt_count: "<<tmp_router->get_hotspot_flit_count()<<std::endl;
+		tmp_router->clear_hotspot_flit_count();
+	}
+	next_hotspot_processing_cycle+=hotspot_period;
 }

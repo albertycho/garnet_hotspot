@@ -61,6 +61,7 @@ Router::Router(const Params *p)
 
     m_input_unit.clear();
     m_output_unit.clear();
+	clear_hotspot_flit_count();
 }
 
 Router::~Router()
@@ -84,6 +85,11 @@ Router::init()
 void
 Router::wakeup()
 {
+	GarnetNetwork* GNP=get_net_ptr();
+	if(GNP->hotspot_period_trigger()){
+		process_hotspot_data();
+	}
+
     DPRINTF(RubyNetwork, "Router %d woke up\n", m_id);
 
     // check for incoming flits
