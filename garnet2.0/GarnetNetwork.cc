@@ -534,17 +534,46 @@ GarnetNetwork::hotspot_period_trigger()
 	return false;
 }
 
+void insert_sort_hotspot_object(std::vector<hotspot_sorting_object> &vec, hotspot_sorting_object h_obj)
+{
+	std::vector<hotspot_sorting_object>::iterator it;
+	it=vec.begin();
+	while(it!=vec.end()){
+		if(h_obj.flit_count > it->flit_count)
+		{
+			//insert h_obj in front of it?
+			vec.insert(it, h_obj);
+			return;
+		}
+
+		it++;
+	}
+	vec.pushback(h_obj);
+
+}
+
 void
 GarnetNetwork::process_hotspot_data()
 {
+
+	std::vector<hotspot_sorting_object> hotspot_sorter;
+	hotspot_sorter.clear();
+
 
 	hotspotStatFile<<"at cycle "<<curCycle()<<std::endl;
 
 	std::cout<<"process_hotspot_called"<<std::endl;
 
 	for(Router * tmp_router : m_routers){
-		hotspotStatFile<<"router_id:"<<tmp_router->get_id()<<", pkt_count: "<<tmp_router->get_hotspot_flit_count()<<std::endl;
+		//hotspotStatFile<<"router_id:"<<tmp_router->get_id()<<", pkt_count: "<<tmp_router->get_hotspot_flit_count()<<std::endl;
+		hotspot_sorting_object h_object;
+		h_object.router_id=tmp_router->get_id();
+		h_object.flit_count=tmp_router->get_hotspot_flit_count();
+		insert_sort_hotspot_object(hotspot_sorter, h_object);
 		tmp_router->clear_hotspot_flit_count();
+	}
+	for(int i=0; i<hotspot_cutoff; i++){
+		hotspotStatFile<<"router_id:"<<hotspot_sorter[i].router_id<<", pkt_count: "<<hotspot_sorter[i].flit_count<<std::endl;
 	}
 	next_hotspot_processing_cycle+=hotspot_period;
 }

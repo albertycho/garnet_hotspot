@@ -51,6 +51,11 @@ class NetDest;
 class NetworkLink;
 class CreditLink;
 
+typedef struct hotspot_sorting_object{
+	int router_id;
+	int flit_count;
+}hotspot_sorting_object;
+
 class GarnetNetwork : public Network
 {
   public:
@@ -218,6 +223,8 @@ class GarnetNetwork : public Network
 	
 	// internal
 	int next_hotspot_processing_cycle;
+
+
 
 };
 
