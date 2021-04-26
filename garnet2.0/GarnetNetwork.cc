@@ -118,6 +118,9 @@ GarnetNetwork::GarnetNetwork(const Params *p)
 	if(hotspot_cutoff==-1){
 		hotspot_cutoff = m_routers.size();
 	}
+	if(hotspot_cutoff>m_routers.size()){
+		hotspot_cutoff = m_routers.size();
+	}
 	if(hotspot_period==-1){
 		hotspot_period=cmdline_sim_cycles;
 	}
