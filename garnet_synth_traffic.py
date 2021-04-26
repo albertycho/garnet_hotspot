@@ -132,6 +132,8 @@ hs_cfg.write(str(options.hotspot_cutoff))
 hs_cfg.write("\n")
 hs_cfg.write(str(options.hotspot_period))
 hs_cfg.write("\n")
+hs_cfg.write(options.topology)
+hs_cfg.write("\n")
 hs_cfg.write(str(options.sim_cycles))
 hs_cfg.write("\n")
 

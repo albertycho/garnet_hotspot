@@ -477,13 +477,6 @@ GarnetNetwork::collateStats()
 
 	//Loupe
 	loupeFile << "End of sim," <<std::endl;;
-	loupeFile << "Router_id,activity_count," <<std::endl;
-	for(int i=0; i<m_routers.size(); i++){
-		Router * cur_router = m_routers[i];
-		double activity = cur_router->get_crossbar_activity();
-		int rid = cur_router->get_id();
-		loupeFile << rid << "," << activity << "," << std::endl;;
-	}
 
 }
 
@@ -562,10 +555,8 @@ GarnetNetwork::process_hotspot_data()
 
 	hotspotStatFile<<"at cycle "<<curCycle()<<std::endl;
 
-	std::cout<<"process_hotspot_called"<<std::endl;
 
 	for(Router * tmp_router : m_routers){
-		//hotspotStatFile<<"router_id:"<<tmp_router->get_id()<<", pkt_count: "<<tmp_router->get_hotspot_flit_count()<<std::endl;
 		hotspot_sorting_object h_object;
 		h_object.router_id=tmp_router->get_id();
 		h_object.flit_count=tmp_router->get_hotspot_flit_count();
