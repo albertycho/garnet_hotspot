@@ -548,7 +548,7 @@ void insert_sort_hotspot_object(std::vector<hotspot_sorting_object> &vec, hotspo
 
 		it++;
 	}
-	vec.pushback(h_obj);
+	vec.push_back(h_obj);
 
 }
 
