@@ -105,7 +105,6 @@ GarnetNetwork::GarnetNetwork(const Params *p)
 	std::ifstream hotspot_cfg_file("hotspot_config.txt");
 
 	if(hotspot_cfg_file.is_open()){
-		std::cout<<"opened hotspot_config.txt"<<std::endl;
 		hotspot_cfg_file >> hotspot_detect_on;
 		hotspot_cfg_file >> hotspot_cutoff;
 		hotspot_cfg_file >> hotspot_period;
