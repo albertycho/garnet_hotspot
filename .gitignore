@@ -1,5 +1,6 @@
 gem5/build
 gem5/build/*
 garnet2.0/.vscode/*
+traceFiles/*
 __pycache__/*
 *swp
