@@ -31,12 +31,13 @@ from hotspot_visualizer_mesh import create_heat_maps
 from parse_data import parseData, load
 from hotspot_functions import create_colormap, trackbar_nothing
 
+import sys
 import cv2 as cv
 import numpy as np
 
-def main():
+def main(filename):
     # change these for the current .csv file
-    filename = r'data\XY_Mesh_4x4_UniformRandom_50.pkl'
+    #filename = r'old_data/XY_Mesh_4x4_BitComplement_50.pkl'
 
     window_size = 100
 
@@ -73,4 +74,7 @@ def main():
         old_window_size = window_size
 
 if __name__ == "__main__":
-    main()
+    if(len(sys.argv) < 2):
+        print("usage: python hotspot_visualizer_colormap.py pklFile");
+    else:
+        main(sys.argv[1])
