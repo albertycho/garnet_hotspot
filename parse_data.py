@@ -6,6 +6,7 @@ Alan Kittel
 Version 1.0: Initial implementation
 """
 
+import sys
 import numpy as np
 import pickle
 
@@ -47,7 +48,11 @@ def parseData(filename, topology):
     lines = [line.split(',')[0:-1] for line in lines]
 
     # get topology information
+    #topology_info = np.array([int(lines[0][i]) for i in range(len(lines[0]))])
+    lines[0].pop(0)
+    lines[0].pop(0)
     topology_info = np.array([int(lines[0][i]) for i in range(len(lines[0]))])
+    
 
     # line number of the end of sim printing
     end_sim_idx = np.argwhere([line[0] == "End of sim" for line in lines])[0][0]
@@ -86,3 +91,16 @@ def load(loadfile):
         data = pickle.load(f)
     
     return data["heat_map_routers"], data["heat_map_ports"], data["topology_info"], data["router_activity"]
+
+def main(csvFile, outPklFile):
+    print("print from parse_data main")
+    #csvFile="traceFiles/transpose_ro.csv"
+    #load_and_save(csvFile, "data/transpose_ro.pkl", "MESH")
+    load_and_save(csvFile, outPklFile, "MESH")
+
+
+if __name__ == "__main__":
+    if(len(sys.argv) < 3):
+        print("usage: python parse_data.py csvFile outPklFile");
+    else:
+        main(sys.argv[1], sys.argv[2])

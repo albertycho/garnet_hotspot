@@ -25,6 +25,7 @@ ECE 6115
 4/16/2021
 """
 
+import sys
 import cv2 as cv
 import numpy as np
 from parse_data import parseData, load
@@ -112,14 +113,17 @@ def draw_mesh(heat_map, topology_info, n, router_display):
                 cv.line(img, (top_left_x+router_width, top_left_y+router_width//2), (top_left_x+router_width*2, top_left_y+router_width//2), (0,0,0), 2)
     return img
 
-def main():
+def main(filename, sim_length):
     """ main function """
 
     # change these for the current .csv file
-    filename = r'data\XY_Mesh_4x4_UniformRandom_50.pkl'
+    #filename = r'data/uniformrandom_90.pkl'
+    #filename = r'data/bit_compl_deadlock.pkl'
 
     #TODO don't hardcode sim_cycles, output to .csv file in garnet
-    sim_cycles = 10000
+    #sim_cycles = 10000
+
+    sim_cycles = int(sim_length)
 
     # initial window size and offset for display
     window_size = 1000
@@ -129,8 +133,8 @@ def main():
     heat_map_routers /= 4.0
 
     # compute an initial heat map
-    heat_map_routers_window = heat_map_window(heat_map_routers, window_size, window_offset)
-    heat_map_ports_window = heat_map_window(heat_map_ports, window_size, window_offset)
+    heat_map_routers_window = heat_map_window(heat_map_routers, window_size, window_offset, 0)
+    heat_map_ports_window = heat_map_window(heat_map_ports, window_size, window_offset, 0)
 
     # create the GUI window and trackbars
     cv.namedWindow('Heatmap', cv.WINDOW_NORMAL)
@@ -139,14 +143,19 @@ def main():
     cv.createTrackbar('Window Offset', 'Heatmap', window_offset, sim_cycles-1, trackbar_nothing)
     cv.createTrackbar('Most Active Routers', 'Heatmap', 0, topology_info[1]**2, trackbar_nothing)
     cv.createTrackbar('Toggle Router/Port View', 'Heatmap', 0, 1, trackbar_nothing)
+    cv.createTrackbar('Toggle normalize for average flits', 'Heatmap', 0, 1, trackbar_nothing)
 
     # set tracked variables to their initial values for the first pass through below loop
     old_window_offset = cv.getTrackbarPos('Window Offset', 'Heatmap')
     old_window_size = cv.getTrackbarPos('Window Size', 'Heatmap')
     most_active = cv.getTrackbarPos('Most Active Routers', 'Heatmap')
     router_display = cv.getTrackbarPos('Toggle Router/Port View','Heatmap')
+    normalize_opt = cv.getTrackbarPos('Toggle normalize for average flits','Heatmap')
+    #print(normalize_opt)
 
     while(1):
+        heat_map_routers_window = heat_map_window(heat_map_routers, window_size, window_offset, normalize_opt)
+        heat_map_ports_window = heat_map_window(heat_map_ports, window_size, window_offset, normalize_opt)
         # draw the mesh, either with routers color coded, or the ports
         if router_display == 0:
             cv.imshow('Heatmap', draw_mesh(heat_map_routers_window, topology_info, most_active, router_display))
@@ -162,6 +171,7 @@ def main():
         window_size = cv.getTrackbarPos('Window Size', 'Heatmap')
         most_active = cv.getTrackbarPos('Most Active Routers', 'Heatmap')
         router_display = cv.getTrackbarPos('Toggle Router/Port View','Heatmap')
+        normalize_opt = cv.getTrackbarPos('Toggle normalize for average flits','Heatmap')
 
         if window_size == 0:
             window_size = 1
@@ -176,8 +186,8 @@ def main():
 
         # the user changes the window_size, so need to recompute the heat map.
         if window_size != old_window_size or window_offset != old_window_offset:
-            heat_map_routers_window = heat_map_window(heat_map_routers, window_size, window_offset)
-            heat_map_ports_window = heat_map_window(heat_map_ports, window_size, window_offset)
+            heat_map_routers_window = heat_map_window(heat_map_routers, window_size, window_offset, normalize_opt)
+            heat_map_ports_window = heat_map_window(heat_map_ports, window_size, window_offset, normalize_opt)
 
         old_window_size = window_size
         old_window_offset = window_offset
@@ -185,4 +195,7 @@ def main():
     cv.destroyAllWindows()
 
 if __name__ == "__main__":
-    main()
+    if(len(sys.argv) < 3):
+        print("usage: python hotspot_visualizer_mesh.py pklFile sim_length");
+    else:
+        main(sys.argv[1], sys.argv[2])

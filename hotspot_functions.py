@@ -38,7 +38,7 @@ def create_heat_maps(cycle_data, topology_info):
             heat_map_ports[dir_cycles,(i*num_ports)+j] = 1
     return heat_map_routers, heat_map_ports
 
-def heat_map_window(heat_map, time_window, window_offset):
+def heat_map_window(heat_map, time_window, window_offset, normalize_opt):
     """
     Computes the average flit activity from a heat map over a window.
 
@@ -49,8 +49,21 @@ def heat_map_window(heat_map, time_window, window_offset):
     Outputs:
         average flit activity for each router, port, or link over the window
     """
+    t_list=np.sum(heat_map[window_offset:window_offset+time_window], axis=0)
+    #t_array=np.sum(heat_map[window_offset:window_offset+time_window], axis=0)
 
-    return np.sum(heat_map[window_offset:window_offset+time_window,:], axis=0) / time_window
+    #t_list=t_array.tolist()
+
+    max_flit=1.0
+    for i in range(len(t_list)):
+        if t_list[i]>max_flit:
+            max_flit=t_list[i]
+
+    #TODO: we want to have both options
+    if normalize_opt==0:
+        return np.sum(heat_map[window_offset:window_offset+time_window,:], axis=0) / time_window
+    else:
+        return np.sum(heat_map[window_offset:window_offset+time_window,:], axis=0) / max_flit
 
 def heat_map_window_all(heat_map, time_window):
     """
