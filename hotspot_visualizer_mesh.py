@@ -46,7 +46,7 @@ def draw_mesh(heat_map, topology_info, n, router_display):
     """
 
     img_size = 1000 # set img size as 1000x1000
-    num_rows = topology_info[1]
+    num_rows = topology_info[2]
     router_width = img_size//2//num_rows # pixel width for a drawn router
 
     img = np.full((img_size+router_width,img_size+router_width,3), 255, np.uint8)
@@ -113,17 +113,8 @@ def draw_mesh(heat_map, topology_info, n, router_display):
                 cv.line(img, (top_left_x+router_width, top_left_y+router_width//2), (top_left_x+router_width*2, top_left_y+router_width//2), (0,0,0), 2)
     return img
 
-def main(filename, sim_length):
+def main(filename):
     """ main function """
-
-    # change these for the current .csv file
-    #filename = r'data/uniformrandom_90.pkl'
-    #filename = r'data/bit_compl_deadlock.pkl'
-
-    #TODO don't hardcode sim_cycles, output to .csv file in garnet
-    #sim_cycles = 10000
-
-    sim_cycles = int(sim_length)
 
     # initial window size and offset for display
     window_size = 1000
@@ -131,6 +122,8 @@ def main(filename, sim_length):
 
     heat_map_routers, heat_map_ports, topology_info, _ = load(filename)
     heat_map_routers /= 4.0
+
+    sim_cycles = topology_info[0]
 
     # compute an initial heat map
     heat_map_routers_window = heat_map_window(heat_map_routers, window_size, window_offset, 0)
@@ -141,7 +134,7 @@ def main(filename, sim_length):
     cv.resizeWindow('Heatmap', 1000, 1000) # default size is 1000x1000px, but it is resizable
     cv.createTrackbar('Window Size', 'Heatmap', window_size, sim_cycles, trackbar_nothing)
     cv.createTrackbar('Window Offset', 'Heatmap', window_offset, sim_cycles-1, trackbar_nothing)
-    cv.createTrackbar('Most Active Routers', 'Heatmap', 0, topology_info[1]**2, trackbar_nothing)
+    cv.createTrackbar('Most Active Routers', 'Heatmap', 0, topology_info[2]**2, trackbar_nothing)
     cv.createTrackbar('Toggle Router/Port View', 'Heatmap', 0, 1, trackbar_nothing)
     cv.createTrackbar('Toggle normalize for average flits', 'Heatmap', 0, 1, trackbar_nothing)
 
@@ -151,7 +144,6 @@ def main(filename, sim_length):
     most_active = cv.getTrackbarPos('Most Active Routers', 'Heatmap')
     router_display = cv.getTrackbarPos('Toggle Router/Port View','Heatmap')
     normalize_opt = cv.getTrackbarPos('Toggle normalize for average flits','Heatmap')
-    #print(normalize_opt)
 
     while(1):
         heat_map_routers_window = heat_map_window(heat_map_routers, window_size, window_offset, normalize_opt)
@@ -195,7 +187,7 @@ def main(filename, sim_length):
     cv.destroyAllWindows()
 
 if __name__ == "__main__":
-    if(len(sys.argv) < 3):
-        print("usage: python hotspot_visualizer_mesh.py pklFile sim_length");
+    if(len(sys.argv) < 2):
+        print("usage: python hotspot_visualizer_mesh.py pklFile");
     else:
-        main(sys.argv[1], sys.argv[2])
+        main(sys.argv[1])

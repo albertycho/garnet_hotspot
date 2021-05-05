@@ -1,3 +1,13 @@
+"""
+functions to create heat_map at parse, and heat_map_window at visualizer runtime
+These functions are either called in parse_data or hotspot_visualizer
+
+Alan Kittel
+Albert Cho
+ECE6115
+05/05/2021
+"""
+
 import numpy as np
 from scipy.signal import fftconvolve
 import cv2 as cv
@@ -22,10 +32,10 @@ def create_heat_maps(cycle_data, topology_info):
     sim_cycles = cycle_data[-1]["cycle"]
     routers = cycle_data[cycle_data["unit"] == "InUnit"]
 
-    heat_map_routers = np.zeros((sim_cycles, topology_info[0]))
-    heat_map_ports = np.zeros((sim_cycles, topology_info[0]*num_ports))
+    heat_map_routers = np.zeros((sim_cycles, topology_info[1]))
+    heat_map_ports = np.zeros((sim_cycles, topology_info[1]*num_ports))
 
-    for i in range(topology_info[0]):
+    for i in range(topology_info[1]):
         # calculate heat map for routers
         router_cycles = routers[np.logical_and(routers["unit_ID"] == i, routers["direction"] != "Local")]["cycle"] - 1
         num_flits = np.bincount(router_cycles)
@@ -46,20 +56,18 @@ def heat_map_window(heat_map, time_window, window_offset, normalize_opt):
         heat_map - heat map for routers, ports, or links
         time_window - number of cycles to average over
         window_offset - cycle offset for position of window within the heat_map array
+        normalize_opt - normalize by 1flit / cycle or hottest router
     Outputs:
         average flit activity for each router, port, or link over the window
     """
-    t_list=np.sum(heat_map[window_offset:window_offset+time_window], axis=0)
-    #t_array=np.sum(heat_map[window_offset:window_offset+time_window], axis=0)
 
-    #t_list=t_array.tolist()
+    t_list=np.sum(heat_map[window_offset:window_offset+time_window], axis=0)
 
     max_flit=1.0
     for i in range(len(t_list)):
         if t_list[i]>max_flit:
             max_flit=t_list[i]
 
-    #TODO: we want to have both options
     if normalize_opt==0:
         return np.sum(heat_map[window_offset:window_offset+time_window,:], axis=0) / time_window
     else:

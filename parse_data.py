@@ -2,6 +2,7 @@
 Parses the .csv file produced by running a Garnet simulation.
 
 Alan Kittel
+Albert Cho
 4/13/2021
 Version 1.0: Initial implementation
 """
@@ -48,8 +49,6 @@ def parseData(filename, topology):
     lines = [line.split(',')[0:-1] for line in lines]
 
     # get topology information
-    #topology_info = np.array([int(lines[0][i]) for i in range(len(lines[0]))])
-    lines[0].pop(0)
     lines[0].pop(0)
     topology_info = np.array([int(lines[0][i]) for i in range(len(lines[0]))])
     
@@ -93,9 +92,6 @@ def load(loadfile):
     return data["heat_map_routers"], data["heat_map_ports"], data["topology_info"], data["router_activity"]
 
 def main(csvFile, outPklFile):
-    print("print from parse_data main")
-    #csvFile="traceFiles/transpose_ro.csv"
-    #load_and_save(csvFile, "data/transpose_ro.pkl", "MESH")
     load_and_save(csvFile, outPklFile, "MESH")
 
 

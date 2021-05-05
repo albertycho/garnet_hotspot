@@ -71,6 +71,26 @@ This equates to 9,901 separate color interpolations concatenated into a single c
 
 This operation is equivalent to a 1D convolution, where the normalized cycle-by-cycle arriving flit count for a router is colvolved with a unit pulse signal of length N. This is how it is calculated in the code (see heat_map_window all in hotspot_functions.py).
 
+## Runcmd Example
+Build and run Garnet to generate LoupeTraceFile.csv
+Run parse_data.py with the .csv file to generate .pkl file
+Run hotspot_visualizer (Mehs or colorview) with the .pkl file
+.pkl file is the output from parse_data, and input to hotspot_visualizer
+Script are split into 2 parts because parse_data could take long, and we want to avoid running it everytime we want to visualize the same load
+
+ex)
+./build/Garnet_standalone/gem5.opt configs/example/garnet_synth_traffic.py --network=garnet2.0 --num-cpus=64 --num-dirs=64 --topology=Mesh --mesh-rows=8 --sim-cycles=10000 --inj-vnet=0 --routing-algorithm=random_oblivious --vcs-per-vnet=16 --injectionrate=0.90 --garnet-deadlock-threshold=1000 --synthetic=transpose
+python parse_data.py LoupeTraceFile.csv trace.pkl
+python hotspot_visualizer_mesh.py trace.pkl
+
+(consult SETUP section of this document for required libraries)
+
+
+## Sample Traces
+Sample .csv files and .pkl files can be found in sample_data branch of this git repository:
+
+
+
 ## Future Work
 Some improvements that could be made
 * Output and parse the topology type from Garnet rather than hard coding it.
