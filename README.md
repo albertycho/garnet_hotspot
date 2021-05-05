@@ -87,8 +87,9 @@ python hotspot_visualizer_mesh.py trace.pkl
 
 
 ## Sample Traces
-Sample .csv files and .pkl files can be found in sample_data branch of this git repository:
-
+Sample .csv files and .pkl files can be found in sample_data branch of this git repository. 
+url:
+https://github.com/albertycho/garnet_hotspot/tree/sample_data
 
 
 ## Future Work
