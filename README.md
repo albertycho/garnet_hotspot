@@ -17,7 +17,7 @@ The following Python packages will need to be installed, with known working vers
 ### Hotspot detection output within Garnet
 We enable garnet hotpost tracking output (non visualization part) by default. \
 We take additional options - "hotspot-cutoff" for number of hotspots to track and "hotspot_period" for sampling period. \
-Tracking output will be written to hotspotStatFile.txt every run. \
+Tracking output will be written to hotspotStatFile.txt every run. 
 
 Content of hotspotStatFile.txt will look like this:\
 at cycle 1000\
@@ -25,7 +25,7 @@ Router_id, flit_count\
 Router_id, flit_count\
 at cycle 2000\
 Router_id, flit_count\
-Router_id, flit_count\
+Router_id, flit_count
 
 for hotspot-cutoff==2 and hotspot-period==1000
 
@@ -88,7 +88,7 @@ Build and run Garnet to generate LoupeTraceFile.csv\
 Run parse_data.py with the .csv file to generate .pkl file\
 Run hotspot_visualizer (Mehs or colorview) with the .pkl file\
 .pkl file is the output from parse_data, and input to hotspot_visualizer\
-Script are split into 2 parts because parse_data could take long, and we want to avoid running it everytime we want to visualize the same load\
+Script are split into 2 parts because parse_data could take long, and we want to avoid running it everytime we want to visualize the same load
 
 ex)
 ./build/Garnet_standalone/gem5.opt configs/example/garnet_synth_traffic.py --network=garnet2.0 --num-cpus=64 --num-dirs=64 --topology=Mesh --mesh-rows=8 --sim-cycles=10000 --inj-vnet=0 --routing-algorithm=random_oblivious --vcs-per-vnet=16 --injectionrate=0.90 --garnet-deadlock-threshold=1000 --synthetic=transpose\
